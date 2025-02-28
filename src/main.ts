@@ -28,14 +28,45 @@ function createTile(item: any, rowIndex: number, tileIndex: number): HTMLElement
   // Image for the tile
   const imgWrapper = document.createElement('div');
   imgWrapper.classList.add('img-wrapper');
+  
+  // Set a black background and the same size as the image to prevent layout shifts
+  imgWrapper.style.width = '400px';  // Adjust to the desired size
+  imgWrapper.style.height = '300px'; // Adjust to the desired size
+  imgWrapper.style.backgroundColor = '#1C1C1C'; // Black background for fallback
+  imgWrapper.style.display = 'flex';
+  imgWrapper.style.justifyContent = 'center';
+  imgWrapper.style.alignItems = 'center';
+  imgWrapper.style.color = 'white';
+  imgWrapper.style.fontSize = '16px';
+  imgWrapper.style.textAlign = 'center';
+  
 
+  // Create the fallback text
+  const fallbackText = document.createElement('span');
+  fallbackText.innerHTML = 'Something went wrong. <br><br> Try again later ';
+  imgWrapper.appendChild(fallbackText); // Initially, fallback text will be shown
+
+  // Create the image element
   const img = document.createElement('img');
   img.src = `${item.visuals.artwork.horizontal_tile.image.path}&size=400x300&format=jpeg`;
   img.alt = item.visuals.headline || 'No Title';
-  
+
+  // Handle image loading error by displaying the fallback
+  img.onerror = function () {
+    img.style.display = 'none';  // Hide the image if there's an error
+    fallbackText.style.display = 'block';  // Show the fallback text
+  };
+
+  // Handle successful image load
+  img.onload = function () {
+    img.style.display = 'block';  // Show the image if it loads successfully
+    fallbackText.style.display = 'none';  // Hide the fallback text
+  };
+
+  // Append the image to the wrapper
   imgWrapper.appendChild(img);
 
-  // Add watermark
+  // Add watermark (optional)
   const watermarkImg = document.createElement('img');
   watermarkImg.src = '/Hulu-Logo.png'; // Path to your watermark image
   watermarkImg.classList.add('watermark-img');
@@ -50,6 +81,7 @@ function createTile(item: any, rowIndex: number, tileIndex: number): HTMLElement
 
   return tile;
 }
+
 
 function createSection(container: HTMLElement, collection: any, rowIndex: number) {
   const section = document.createElement('div');
@@ -99,7 +131,7 @@ function renderView(data: any) {
   });
 }
 
-// Add keyboard navigation
+//Keyboard navigation
 document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'ArrowRight':
@@ -173,7 +205,7 @@ function selectTile() {
   if (tile) {
     const title = tile.querySelector('p'); // Assuming the title is inside a <p> element
     if (title) {
-      alert(`Tile Selected: ${title.textContent}`); // Display the title of the selected tile
+      alert(`Now Playing: ${title.textContent}`); // Display the title of the selected tile
     }
   }
 }

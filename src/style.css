@@ -2,9 +2,12 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #1a1a1a;
+  background: 
+  linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),  /* Semi-transparent overlay */
+  url('/public/hulu-background-image.jpg'); /* Your background image */
   color: #fff;
 }
+
 
 #app {
   max-width: 1280px;
@@ -43,16 +46,7 @@ body {
 .tile {
   background-color: #333;
   border-radius: 8px;
-  /* overflow: hidden;
-  transition: transform 0.2s; */
   margin: 3px;
-}
-
-.tile img {
-/* 
-  width: 400px;
-  height: 300px;
-  object-fit: cover; */
 }
 
 /* Highlight the focused tile */
@@ -88,4 +82,5 @@ body {
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
   pointer-events: none; /* Make sure watermark doesn't interfere with clicking */
+  opacity: 0.5;
 }
