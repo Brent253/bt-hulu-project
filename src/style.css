@@ -1,0 +1,72 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+#app {
+  max-width: 1280px;
+  /* margin: 0 auto; */
+  padding: 2rem;
+  text-align: center;
+}
+
+.hub-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  /* justify-content: center; */
+  /* align-items: center; */
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.row-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: left;
+  color: #fff; /* Ensure text is visible against the background */
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.tile {
+  background-color: #333;
+  border-radius: 8px;
+  /* overflow: hidden;
+  transition: transform 0.2s; */
+  margin: 3px;
+}
+
+.tile img {
+/* 
+  width: 400px;
+  height: 300px;
+  object-fit: cover; */
+}
+
+/* Highlight the focused tile */
+.tile.focused {
+  border: 5px solid #FFF; /* Green border to indicate focus */
+  transform: scale(1.1); /* Slightly enlarge focused tile */
+  transition: transform 0.2s, border 0.2s;
+}
+
+.tile p {
+  padding: 10px;
+  text-align: center;
+  color: #fff;
+}
+
+.tile:hover {
+  transform: scale(1.05);
+}
