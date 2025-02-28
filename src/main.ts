@@ -4,6 +4,8 @@ import './style.css'
 async function fetchHubData() {
   const res = await fetch('https://d1q0vy0v52gyjr.cloudfront.net/hub.json');
   const data = await res.json();
+
+  //Render view of page 
   renderView(data);
 }
 
@@ -24,10 +26,22 @@ function createTile(item: any, rowIndex: number, tileIndex: number): HTMLElement
   tile.setAttribute('data-tile-index', tileIndex.toString());
 
   // Image for the tile
+  const imgWrapper = document.createElement('div');
+  imgWrapper.classList.add('img-wrapper');
+
   const img = document.createElement('img');
   img.src = `${item.visuals.artwork.horizontal_tile.image.path}&size=400x300&format=jpeg`;
   img.alt = item.visuals.headline || 'No Title';
-  tile.appendChild(img);
+  
+  imgWrapper.appendChild(img);
+
+  // Add watermark
+  const watermarkImg = document.createElement('img');
+  watermarkImg.src = '/Hulu-Logo.png'; // Path to your watermark image
+  watermarkImg.classList.add('watermark-img');
+  imgWrapper.appendChild(watermarkImg);
+
+  tile.appendChild(imgWrapper);  // Append the imgWrapper, not the img directly
 
   // Tile Title
   const title = document.createElement('p');
@@ -157,7 +171,10 @@ function focusTile() {
 function selectTile() {
   const tile = document.querySelector(`[data-row-index="${currentRow}"] [data-tile-index="${currentTile}"]`);
   if (tile) {
-    alert(`Tile Selected: Row ${currentRow}, Tile ${currentTile}`);
+    const title = tile.querySelector('p'); // Assuming the title is inside a <p> element
+    if (title) {
+      alert(`Tile Selected: ${title.textContent}`); // Display the title of the selected tile
+    }
   }
 }
 
