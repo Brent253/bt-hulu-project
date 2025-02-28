@@ -2,24 +2,44 @@ import './style.css'
 
 // Fetch api data
 async function fetchHubData() {
-  const res = await fetch('https://d1q0vy0v52gyjr.cloudfront.net/hub.json');
-  const data = await res.json();
-
-  //Render view of page 
-  renderView(data);
+  try {
+    const res = await fetch('https://d1q0vy0v52gyjr.cloudfront.net/hub.json');
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch data');  // Handle non-2xx responses
+    }
+    
+    const data = await res.json();
+    
+    // Render view of the page
+    renderView(data);
+  } catch (error) {
+    console.error('Error fetching Hub data:', error);
+    renderErrorView();  // Render a fallback view with a retry option
+  }
 }
 
-// Fetch data for individual collections
+// Fetch data for individual collections with error handling
 async function fetchCollectionData(href: string): Promise<any> {
-  const res = await fetch(href);
-  return res.json();
+  try {
+    const res = await fetch(href);
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch collection data');  // Handle non-2xx responses
+    }
+    
+    return await res.json();
+  } catch (error) {
+    console.error('Error fetching collection data:', error);
+    throw error;  // Propagate the error so it can be handled in the caller
+  }
 }
 
 // Add keyboard navigation
 let currentRow = 0;
 let currentTile = 0;
 
-function createTile(item: any, rowIndex: number, tileIndex: number): HTMLElement {
+function createVideoTile(item: any, rowIndex: number, tileIndex: number): HTMLElement {
   const tile = document.createElement('div');
   tile.classList.add('tile');
   tile.setAttribute('data-row-index', rowIndex.toString());
@@ -28,18 +48,7 @@ function createTile(item: any, rowIndex: number, tileIndex: number): HTMLElement
   // Image for the tile
   const imgWrapper = document.createElement('div');
   imgWrapper.classList.add('img-wrapper');
-  
-  // Set a black background and the same size as the image to prevent layout shifts
-  imgWrapper.style.width = '400px';  // Adjust to the desired size
-  imgWrapper.style.height = '300px'; // Adjust to the desired size
-  imgWrapper.style.backgroundColor = '#1C1C1C'; // Black background for fallback
-  imgWrapper.style.display = 'flex';
-  imgWrapper.style.justifyContent = 'center';
-  imgWrapper.style.alignItems = 'center';
-  imgWrapper.style.color = 'white';
-  imgWrapper.style.fontSize = '16px';
-  imgWrapper.style.textAlign = 'center';
-  
+
 
   // Create the fallback text
   const fallbackText = document.createElement('span');
@@ -66,7 +75,7 @@ function createTile(item: any, rowIndex: number, tileIndex: number): HTMLElement
   // Append the image to the wrapper
   imgWrapper.appendChild(img);
 
-  // Add watermark (optional)
+  // Add watermark
   const watermarkImg = document.createElement('img');
   watermarkImg.src = '/Hulu-Logo.png'; // Path to your watermark image
   watermarkImg.classList.add('watermark-img');
@@ -80,6 +89,31 @@ function createTile(item: any, rowIndex: number, tileIndex: number): HTMLElement
   tile.appendChild(title);
 
   return tile;
+}
+
+function focusTile() {
+  // Remove focus from all tiles
+  const allTiles = document.querySelectorAll('.tile');
+  if (allTiles.length === 0) return; // No tiles to focus on
+
+  allTiles.forEach(tile => tile.classList.remove('focused'));
+
+  // Focus the new tile
+  const tile = document.querySelector(`[data-row-index="${currentRow}"] [data-tile-index="${currentTile}"]`);
+  if (tile) {
+    tile.classList.add('focused');
+    tile.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+  }
+}
+
+function selectTile() {
+  const tile = document.querySelector(`[data-row-index="${currentRow}"] [data-tile-index="${currentTile}"]`);
+  if (tile) {
+    const title = tile.querySelector('p'); // Assuming the title is inside a <p> element
+    if (title) {
+      alert(`Now Playing: ${title.textContent}`); // Display the title of the selected tile
+    }
+  }
 }
 
 
@@ -99,7 +133,7 @@ function createSection(container: HTMLElement, collection: any, rowIndex: number
 
   // Loop through each item in the collection (e.g., "For You" items)
   collection.items.forEach((item: any, tileIndex: number) => {
-    const tile = createTile(item, rowIndex, tileIndex);
+    const tile = createVideoTile(item, rowIndex, tileIndex);
     row.appendChild(tile);
   });
 
@@ -130,6 +164,33 @@ function renderView(data: any) {
     focusTile();
   });
 }
+
+//Handles edge cases for api failures for example 
+function renderErrorView() {
+  const app = document.querySelector<HTMLDivElement>('#app')!;
+  app.innerHTML = '';  // Clear any existing content
+
+  const errorContainer = document.createElement('div');
+  errorContainer.classList.add('error-container');
+
+  const errorMessage = document.createElement('p');
+  errorMessage.textContent = 'Something went wrong while loading the content. Please try refreshing or contact hulu support.';
+
+  const retryButton = document.createElement('button');
+  retryButton.textContent = 'Refresh';
+  retryButton.classList.add('retry-button');
+
+  // Retry fetching data on button click
+  retryButton.onclick = () => {
+    app.innerHTML = '';  // Clear the error message before retrying
+    fetchHubData();  // Retry fetching the Hub data
+  };
+
+  errorContainer.appendChild(errorMessage);
+  errorContainer.appendChild(retryButton);
+  app.appendChild(errorContainer);
+}
+
 
 //Keyboard navigation
 document.addEventListener('keydown', (e) => {
@@ -184,30 +245,5 @@ function moveDown() {
     focusTile();
   }
 }
-
-function focusTile() {
-  // Remove focus from all tiles
-  const allTiles = document.querySelectorAll('.tile');
-  if (allTiles.length === 0) return; // No tiles to focus on
-
-  allTiles.forEach(tile => tile.classList.remove('focused'));
-
-  // Focus the new tile
-  const tile = document.querySelector(`[data-row-index="${currentRow}"] [data-tile-index="${currentTile}"]`);
-  if (tile) {
-    tile.classList.add('focused');
-    tile.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-  }
-}
-
-function selectTile() {
-  const tile = document.querySelector(`[data-row-index="${currentRow}"] [data-tile-index="${currentTile}"]`);
-  if (tile) {
-    const title = tile.querySelector('p'); // Assuming the title is inside a <p> element
-    if (title) {
-      alert(`Now Playing: ${title.textContent}`); // Display the title of the selected tile
-    }
-  }
-}
-
+//Load view on render
 fetchHubData();
