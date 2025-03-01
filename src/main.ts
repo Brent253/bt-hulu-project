@@ -1,11 +1,11 @@
 import './style.css'
 
 // Fetch api data
-async function fetchHubData() {
+export async function fetchHubData(): Promise<any>  {
   try {
     const res = await fetch('https://d1q0vy0v52gyjr.cloudfront.net/hub.json');
     
-    if (!res.ok) {
+    if (!res || !res.ok) {
       throw new Error('Failed to fetch data');  // Handle non-2xx responses
     }
     
@@ -13,6 +13,7 @@ async function fetchHubData() {
     
     // Render view of the page
     renderView(data);
+    return data;
   } catch (error) {
     console.error('Error fetching Hub data:', error);
     renderErrorView();  // Render a fallback view with a retry option
@@ -20,11 +21,11 @@ async function fetchHubData() {
 }
 
 // Fetch data for individual collections with error handling
-async function fetchCollectionData(href: string): Promise<any> {
+export async function fetchCollectionData(href: string): Promise<any> {
   try {
     const res = await fetch(href);
     
-    if (!res.ok) {
+    if (!res || !res.ok) {
       throw new Error('Failed to fetch collection data');  // Handle non-2xx responses
     }
     
@@ -213,7 +214,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-function moveRight() {
+export function moveRight() {
   const tiles = document.querySelectorAll(`[data-row-index="${currentRow}"] .tile`);
   if (tiles.length === 0) return; // No tiles in the row
   if (currentTile < tiles.length - 1) {
@@ -222,7 +223,7 @@ function moveRight() {
   }
 }
 
-function moveLeft() {
+export function moveLeft() {
   if (currentTile > 0) {
     currentTile--;
     focusTile();
