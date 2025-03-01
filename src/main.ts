@@ -50,7 +50,6 @@ function createVideoTile(item: any, rowIndex: number, tileIndex: number): HTMLEl
   const imgWrapper = document.createElement('div');
   imgWrapper.classList.add('img-wrapper');
 
-
   // Create the fallback text
   const fallbackText = document.createElement('span');
   fallbackText.innerHTML = 'Something went wrong. <br><br> Try again later ';
@@ -84,13 +83,17 @@ function createVideoTile(item: any, rowIndex: number, tileIndex: number): HTMLEl
 
   tile.appendChild(imgWrapper);  // Append the imgWrapper, not the img directly
 
-  // Tile Title
+  // Tile Headline
   const title = document.createElement('p');
   title.textContent = item.visuals.headline;
   tile.appendChild(title);
 
+  // Store the subtitle as a data attribute on the tile
+  tile.setAttribute('data-subtitle', item.visuals.subtitle || 'No Subtitle');
+
   return tile;
 }
+
 
 function focusTile() {
   // Remove focus from all tiles
@@ -109,10 +112,15 @@ function focusTile() {
 
 function selectTile() {
   const tile = document.querySelector(`[data-row-index="${currentRow}"] [data-tile-index="${currentTile}"]`);
+
   if (tile) {
-    const title = tile.querySelector('p'); // Assuming the title is inside a <p> element
-    if (title) {
-      alert(`Now Playing: ${title.textContent}`); // Display the title of the selected tile
+    const headline = tile.querySelector('p'); // Assuming headline is inside a <p> element
+    const subtitle = tile.getAttribute('data-subtitle'); // Assuming the subtitle is stored as a data attribute
+
+    if (headline && subtitle) {
+      alert(`Now Playing: ${headline.textContent}\nSubtitle: ${subtitle}`);
+    } else if (headline) {
+      alert(`Now Playing: ${headline.textContent}`);
     }
   }
 }
