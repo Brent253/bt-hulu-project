@@ -30,7 +30,7 @@ Clone this repository to your local machine using the following command:
 ```bash
 git clone https://github.com/Brent253/bt-hulu-project.git
 ```
-### Step 2: Clone the Repository
+### Step 2: Navigate to file directory
 cd bt-hulu-project
 
 ### Step 3: Install dependencies
