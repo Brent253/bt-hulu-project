@@ -8,16 +8,11 @@ Demo hulu living room experience app.
 - Supports [TypeScript](https://www.typescriptlang.org/), 
 - Optimized for modern web development
 
-## Demo
-
-Link to a live demo (if applicable).
-
 ## Tech Stack
 
 - **Vite** - Next-generation, fast frontend tool for building modern web apps
-- **TypeScript** (if used) - A statically typed superset of JavaScript
+- **TypeScript** - A statically typed superset of JavaScript
 - **CSS** - Styling methods used
-- Any other tools or libraries you used
 
 ---
 
