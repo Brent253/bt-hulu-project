@@ -43,3 +43,15 @@ Use the following command:
 ```bash
 npm run dev
 ```
+
+### Run tests
+Use the following command:
+```bash
+npx vitest
+```
+
+### Build for production
+Use the following command:
+```bash
+vite build
+```
