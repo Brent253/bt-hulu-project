@@ -28,7 +28,7 @@ Link to a live demo (if applicable).
 Clone this repository to your local machine using the following command:
 
 ```bash
-git clone https://github.com/your-username/your-project-name.git
+git clone https://github.com/Brent253/bt-hulu-project.git
 ```
 ### Step 2: Clone the Repository
 cd bt-hulu-project
